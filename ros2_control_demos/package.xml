@@ -14,8 +14,8 @@
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
-  <exec_depend>ros2_control_demo_example_2</exec_depend>
-  <exec_depend>ros2_control_demo_example_11</exec_depend>
+  <exec_depend>ros2_control_demo_bicycledrivebot_carlike</exec_depend>
+  <exec_depend>ros2_control_demo_diffdrivebot</exec_depend>
 
   <export>
     <build_type>ament_cmake</build_type>

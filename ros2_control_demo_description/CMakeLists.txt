@@ -9,7 +9,7 @@ install(
 )
 
 install(
-  DIRECTORY carlikebot/urdf carlikebot/rviz
+  DIRECTORY carlikebot/meshes carlikebot/urdf carlikebot/rviz
   DESTINATION share/${PROJECT_NAME}/carlikebot
 )
 

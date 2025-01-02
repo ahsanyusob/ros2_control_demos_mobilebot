@@ -13,10 +13,11 @@ RUN apt-get update \
 
 COPY . /home/ros2_ws/src/ros2_control_demos
 
-RUN cd /home/ros2_ws/src \
+RUN cd /home/ros2_ws \
+    # && vcs import src < src/ros2_control_demos/ros2_control_demos.$ROS_DISTRO.repos \  # uncomment for building dependencies from source
     && rosdep update --rosdistro ${ROS_DISTRO}  \
     && apt-get update \
-    && rosdep install --from-paths ./ -i -y --rosdistro ${ROS_DISTRO} \
+    && rosdep install --from-paths src/ -i -y --rosdistro ${ROS_DISTRO} \
     --skip-keys ros-${ROS_DISTRO}-joint-state-publisher-gui --skip-keys ros-${ROS_DISTRO}-rviz2\
     && \
     : "remove cache" && \
@@ -26,6 +27,9 @@ RUN cd /home/ros2_ws/src \
 RUN cd /home/ros2_ws/ \
   && . /opt/ros/${ROS_DISTRO}/setup.sh \
   && colcon build --merge-install --symlink-install
+
+RUN echo "source /opt/ros/$ROS_DISTRO/setup.bash" >> ~/.bashrc && \
+    echo "source /home/ros2_ws/install/setup.bash" >> ~/.bashrc
 
 COPY Dockerfile/entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]

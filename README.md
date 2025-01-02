@@ -1,131 +1,80 @@
-# ros2_control Demos
+# ROS2_CONTROL DEMOS WITH MOBILEBOT
 
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-
-This repository provides examples for functionalities and capabilities of `ros2_control` framework.
-It consists of simple implementations that demonstrate different concepts. Choose the right branch of this repository matching you ROS 2 distribution as well as the full documentation on [control.ros.org](https://control.ros.org), see [this table](#build-status).
-
-If you want to have rather step by step manual how to do things with `ros2_control` checkout the [ros-control/roscon2022_workshop](https://github.com/ros-controls/roscon2022_workshop) repository.
-
-## Getting Started
-
-Follow the steps provided in the [documentation](https://control.ros.org/master/doc/ros2_control_demos/doc/index.html#installation) to install ros2_control_demos.
+Demonstrations of mobile robots (**mobilebot**) driven by [ROS2 CONTROLLERS](https://github.com/ros-controls/ros2_controllers), namely ackermann, bicycle, differential and other drive controllers. The demos are based on the [official ros2_control_demos](https://github.com/ros-controls/ros2_control_demos), specifically:  
+&emsp;&emsp;-> [ros2_control_demo_example_2](https://control.ros.org/master/doc/ros2_control_demos/example_2/doc/userdoc.html) (diffbot)  
+&emsp;&emsp;-> [ros2_control_demo_example_11](https://control.ros.org/master/doc/ros2_control_demos/example_11/doc/userdoc.html) (carlikebot)  
 
 
-## Content
+## Custom MESHES
+Custom mesh(es) is/are used here. Details in table below:  
+|mobilebot|stl file|description|source|  
+|---------|--------|-----------|------|  
+|carlikebot|[tesla_model3_rc_car_body.stl](ros2_control_demo_description/carlikebot/meshes)|Tesla Model 3, ratio 1:10, dim 423x185x124 mm³| https://www.thingiverse.com/thing:4817952|   
 
-The following examples are part of this demo repository:
+Visualized CARLIKEBOT with BICYCLEDRIVE  
+<img src="ros2_control_demo_description/carlikebot/imgs/TESLA-MODEL-3-RViz.png" length="300">  
 
-* Example 1: [*RRBot*](example_1)
+## Quick Start with Docker in Linux
 
-   *RRBot* - or ''Revolute-Revolute Manipulator Robot'' - a simple position controlled robot with one hardware interface. This example also demonstrates the switching between different controllers.
+### Docker BUILD
 
+```sh
+#edit the Dockerfile (refer to comments)
+sudo docker build . -t ros2_control_demos -f Dockerfile/Dockerfile
+```
 
-* Example 2: [*DiffBot*](example_2)
+Once built, you may modify the demo package, and build a new image on top of it. For example
+```sh
+sudo docker build . -t ros2_control_demos2 -f Dockerfile/Dockerfile2
+```
 
-   *DiffBot*, or ''Differential Mobile Robot'', is a simple mobile base with differential drive.
-   The robot is basically a box moving according to differential drive kinematics.
+### Docker RUN
 
+To grant access to the X server for any process running as root (e.g. running GUI app with sudo) on the same machine 
+```sh
+xhost +local:root
+# ! Allowing privileged process in root to connect to and interact with your X session can be a security risk !
+# ! Use this command only temporarily when needed !
+# run `xhost -local:root` to revoke access
+```
 
-* Example 3: ["RRBot with multiple interfaces"](example_3)
+To run the bicycledrivebot demo with GUI
+```sh
+# Default command is defined with CMD instruction in Dockerfile.
+# running script below will run the carlikebot state publisher, bicycle controller server and RViz
+docker run -it --rm --privileged -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix --net=host --ipc=host --pid=host ros2_control_demos
+```
 
-   *RRBot* with multiple interfaces.
+Custom commands are also possible. For example:  
+&emsp;&emsp;To run the bicycledrivebot demo without GUI
+```sh
+docker run -it --rm --net=host --ipc=host --pid=host ros2_control_demos ros2 launch ros2_control_demo_bicycledrivebot_carlike carlikebot.launch.py remap_odometry_tf:=true gui:=false
+```
 
+&emsp;&emsp;To run ros2 topic list
+```sh
+docker run -it --rm --net=host --ipc=host --pid=host ros2_control_demos ros2 topic list
+# use the same net, ipc and pid values so that the two containers can listen to each other
+```
 
-* Example 4: ["Industrial robot with integrated sensor"](example_4)
+&emsp;&emsp;To access the bash terminal in the docker terminal and test different things
+```sh
+docker run -it --rm --net=host --ipc=host --pid=host ros2_control_demos bash
+# use 'exit' command to exit the terminal or click 'Ctrl+D'
+```
 
-   *RRBot* with an integrated sensor.
-
-* Example 5: ["Industrial robots with externally connected sensor"](example_5)
-
-   *RRBot* with an externally connected sensor.
-
-* Example 6: ["Modular robots with separate communication to each actuator"](example_6)
-
-   The example shows how to implement robot hardware with separate communication to each actuator.
-
-* Example 7: ["6-DOF robot"](example_7)
-
-   A full tutorial for a 6 DOF robot for intermediate ROS 2 users.
-
-* Example 8: ["Using transmissions"](example_8)
-
-   *RRBot* with an exposed transmission interface.
-
-* Example 9: ["Gazebo simulation"](example_9)
-
-   Demonstrates how to switch between simulation and hardware.
-
-* Example 10: ["Industrial robot with GPIO interfaces"](example_10)
-
-   *RRBot* with GPIO interfaces.
-
-* Example 11: ["Car-like robot using steering controller library"](example_11)
-
-* Example 12: ["Controller chaining"](example_12)
-
-   The example shows a simple chainable controller and its integration to form a controller chain to control the joints of *RRBot*.
-
-* Example 13: ["Multi-robot system with hardware lifecycle management"](example_13)
-
-   This example shows how to handle multiple robots in a single controller manager instance.
-
-* Example 14: ["Modular robots with actuators not providing states and with additional sensors"](example_14)
-
-   The example shows how to implement robot hardware with actuators not providing states and with additional sensors.
-
-* Example 15: ["Using multiple controller managers"](example_15)
-
-   This example shows how to integrate multiple robots under different controller manager instances.
-
-## Structure
-
-The repository is structured into `example_XY` folders that fully contained packages with names `ros2_control_demos_example_XY`.
-
-The packages have following structure of subfolders:
-
-- `bringup` - stores launch files and runtime configurations for demo robots.
-- `description` - stores URDF (and XACRO) description files, rviz configurations and meshes for the example robots.
-- `hardware` - stores implementations of example hardware components (interfaces).
-- `controllers` (optional) - stores implementation of example controllers.
-
-The important files to check in each example are:
-
-- `bringup/launch/<example_name>.launch.py` - launch file for the example
-- `bringup/config/<example_name>_controllers.yaml` - parameters with controllers' setup for the example.
-- `description/<example_name>.ros2_control.xacro` - XACRO file with `ros2_control`-URDF-tag with hardware setup and parameters.
-- `description/<example_name>.urdf.xacro` - the main description for for the example used to generate URDF on the fly that is published on the `/robot_description` topic.
-- `hardware/<example_name>.hpp` - header file of the example hardware component implementation.
-- `hardware/<example_name>.cpp` - source file with the example hardware component implementation.
-- `controllers/<example_name>.hpp` - header file of the example controller implementation.
-- `controllers/<example_name>.cpp` - source file with the example controller implementation.
-
-**NOTE** - The structure of packages, folders and files given in this repository is not recommended to be used for your robot. Usually you should have all of the above folders defined as separate packages with naming convention `<robot_name_or_type>/[bringup|description|hardware|controllers]`.
-  More standard structure can be found in [ros_control_boilerplate](https://github.com/PickNikRobotics/ros_control_boilerplate) repository from Dave Coleman or documentation on [ros_team_workspace](https://rtw.stoglrobotics.de/master/guidelines/robot_package_structure.html) from Stogl Robotics.
-
-The concepts in this package are demonstrated on the examples of *RRBot* and *DiffBot*.
-Those two world-known imaginary robots are trivial simulations to demonstrate and test `ros2_control` concepts.
-
-## Build status
-
-ROS 2 Distro | Branch | Build status | Documentation
-:----------: | :----: | :----------: | :-----------:
-**Rolling** | [`master`](https://github.com/ros-controls/ros2_control_demos/tree/master) | [![Rolling Binary Build](https://github.com/ros-controls/ros2_control_demos/actions/workflows/rolling-binary-build.yml/badge.svg?branch=master)](https://github.com/ros-controls/ros2_control_demos/actions/workflows/rolling-binary-build.yml?branch=master) <br /> [![Rolling Semi-Binary Build](https://github.com/ros-controls/ros2_control_demos/actions/workflows/rolling-semi-binary-build.yml/badge.svg?branch=master)](https://github.com/ros-controls/ros2_control_demos/actions/workflows/rolling-semi-binary-build.yml?branch=master) <br /> | [Documentation](https://control.ros.org/master/index.html) <br /> [API Reference](https://control.ros.org/master/doc/api/index.html)
-**Jazzy** | [`master`](https://github.com/ros-controls/ros2_control_demos/tree/master) | [![Rolling Binary Build](https://github.com/ros-controls/ros2_control_demos/actions/workflows/rolling-binary-build.yml/badge.svg?branch=master)](https://github.com/ros-controls/ros2_control_demos/actions/workflows/rolling-binary-build.yml?branch=master) <br /> [![Rolling Semi-Binary Build](https://github.com/ros-controls/ros2_control_demos/actions/workflows/rolling-semi-binary-build.yml/badge.svg?branch=master)](https://github.com/ros-controls/ros2_control_demos/actions/workflows/rolling-semi-binary-build.yml?branch=master) <br /> | [Documentation](https://control.ros.org/master/index.html) <br /> [API Reference](https://control.ros.org/jazzy/doc/api/index.html)
-**Humble** | [`humble`](https://github.com/ros-controls/ros2_control_demos/tree/humble) | [![Humble Binary Build](https://github.com/ros-controls/ros2_control_demos/actions/workflows/humble-binary-build.yml/badge.svg?branch=humble)](https://github.com/ros-controls/ros2_control_demos/actions/workflows/humble-binary-build.yml?branch=humble) <br /> [![Humble Semi-Binary Build](https://github.com/ros-controls/ros2_control_demos/actions/workflows/humble-semi-binary-build.yml/badge.svg?branch=humble)](https://github.com/ros-controls/ros2_control_demos/actions/workflows/humble-semi-binary-build.yml?branch=humble) <br /> | [Documentation](https://control.ros.org/humble/index.html) <br />[API Reference](https://control.ros.org/humble/doc/api/index.html)
+NOTES to `docker run [OPTIONS] <image_name> [COMMAND]`:
+- The `--it` option ensures that an interactive session with pseudo-TTY is created.
+- The `--rm` option ensures that the container is automatically removed, when the container process is finished or exited.
+- The `--privileged -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix` options ensure that the container is run with privileged access to GUI.
+- The `--net=host --ipc=host --pid=host` options ensure that container shares the host's network, inter-process communication and process namespace.
 
 
-### Explanation of different build types
+### Other Docker COMMANDS
 
-**NOTE**: There are three build stages checking current and future compatibility of the package.
-
-1. Binary builds - against released packages (main and testing) in ROS distributions. Shows that direct local build is possible.
-
-   Uses repos file: `src/$NAME$/$NAME$-not-released.<ros-distro>.repos`
-
-1. Semi-binary builds - against released core ROS packages (main and testing), but the immediate dependencies are pulled from source.
-   Shows that local build with dependencies is possible and if fails there we can expect that after the next package sync we will not be able to build.
-
-   Uses repos file: `src/$NAME$/$NAME$.repos`
-
-1. Source build - also core ROS packages are build from source. It shows potential issues in the mid future.
+- To list all containers, run `docker ps -a` or `docker container ls -a`
+- To stop the currently running container, run ```docker stop <container_name>```
+- To remove one or more 'stopped' container(s), run `bash docker rm <container_name>` or `docker container rm <container1_name> <container2_name> ...`
+- To remove ALL 'stopped' container, run `docker container prune`
+- To list out all docker images, run `docker images` or `docker image ls`
+- To remove one or more image(s), run `docker rmi <image_name>` or `docker image rm <image_name>`

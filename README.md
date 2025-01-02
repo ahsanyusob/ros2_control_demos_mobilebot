@@ -23,6 +23,11 @@ Visualized CARLIKEBOT with BICYCLEDRIVE
 sudo docker build . -t ros2_control_demos -f Dockerfile/Dockerfile
 ```
 
+Once built, you may modify the demo package, and build a new image on top of it. For example
+```sh
+sudo docker build . -t ros2_control_demos2 -f Dockerfile/Dockerfile2
+```
+
 ### Docker RUN
 
 To grant access to the X server for any process running as root (e.g. running GUI app with sudo) on the same machine 
@@ -58,7 +63,7 @@ docker run -it --rm --net=host --ipc=host --pid=host ros2_control_demos bash
 # use 'exit' command to exit the terminal or click 'Ctrl+D'
 ```
 
-NOTES:
+NOTES to `docker run [OPTIONS] <image_name> [COMMAND]`:
 - The `--it` option ensures that an interactive session with pseudo-TTY is created.
 - The `--rm` option ensures that the container is automatically removed, when the container process is finished or exited.
 - The `--privileged -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix` options ensure that the container is run with privileged access to GUI.

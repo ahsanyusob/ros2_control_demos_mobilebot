@@ -76,6 +76,7 @@ if(BUILD_TESTING)
   ament_add_pytest_test(bicycledrivebot_carlike_urdf_xacro test/test_urdf_xacro.py)
   ament_add_pytest_test(view_bicycledrivebot_carlike_launch test/test_view_robot_launch.py)
   ament_add_pytest_test(run_bicycledrivebot_carlike_launch test/test_carlikebot_launch.py)
+  ament_add_pytest_test(run_bicycledrivebot_carlike_launch_remapped test/test_carlikebot_launch_remapped.py)
 endif()
 
 ## EXPORTS

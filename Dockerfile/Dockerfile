@@ -16,6 +16,8 @@ COPY . /home/ros2_ws/src/ros2_control_demos
 RUN cd /home/ros2_ws \
     # && vcs import src < src/ros2_control_demos/ros2_control_demos.$ROS_DISTRO.repos \  # uncomment for building dependencies from source
     && rosdep update --rosdistro ${ROS_DISTRO}  \
+    # uncomment this line if you want to use the latest version of ros2_control
+    # && vcs import --input https://raw.githubusercontent.com/ros-controls/ros2_control_ci/master/ros_controls.rolling-on-$ROS_DISTRO.repos \
     && apt-get update \
     && rosdep install --from-paths src/ -i -y --rosdistro ${ROS_DISTRO} \
     --skip-keys ros-${ROS_DISTRO}-joint-state-publisher-gui --skip-keys ros-${ROS_DISTRO}-rviz2\

@@ -32,13 +32,12 @@ sudo docker build . -t ros2_control_demos2 -f Dockerfile/Dockerfile2
 
 To grant access to the X server for any process running as root (e.g. running GUI app with sudo) on the same machine 
 ```sh
-xhost +local:root
 # ! Allowing privileged process in root to connect to and interact with your X session can be a security risk !
 # ! Use this command only temporarily when needed !
-# run `xhost -local:root` to revoke access
+xhost +local:root  # run `xhost -local:root` to revoke access
 ```
 
-To run the bicycledrivebot demo with GUI
+To run the default command (bicycledrivebot demo with GUI)
 ```sh
 # Default command is defined with CMD instruction in Dockerfile.
 # running script below will run the carlikebot state publisher, bicycle controller server and RViz
@@ -46,9 +45,10 @@ docker run -it --rm --privileged -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11
 ```
 
 Custom commands are also possible. For example:  
-&emsp;&emsp;To run the bicycledrivebot demo without GUI
+
+&emsp;&emsp;To run the bicycledrivebot demo with separate sensors and actuators hardware
 ```sh
-docker run -it --rm --net=host --ipc=host --pid=host ros2_control_demos ros2 launch ros2_control_demo_bicycledrivebot_carlike carlikebot.launch.py remap_odometry_tf:=true gui:=false
+docker run -it --rm --net=host --ipc=host --pid=host ros2_control_demos ros2 launch ros2_control_demo_bicycledrivebot_carlike carlikebot_separate_sensors_and_actuators.launch.py remap_odometry_tf:=true gui:=false
 ```
 
 &emsp;&emsp;To run ros2 topic list
@@ -62,6 +62,18 @@ docker run -it --rm --net=host --ipc=host --pid=host ros2_control_demos ros2 top
 docker run -it --rm --net=host --ipc=host --pid=host ros2_control_demos bash
 # use 'exit' command to exit the terminal or click 'Ctrl+D'
 ```
+> ros2 control services  
+> &emsp;&emsp;ros2 control list_controllers  
+> &emsp;&emsp;ros2 control list_controller_types  
+> &emsp;&emsp;ros2 control list_hardware_components  
+> &emsp;&emsp;ros2 control list_hardware_interfaces  
+> &emsp;&emsp;ros2 control load_controller  
+> &emsp;&emsp;ros2 control reload_controller_libraries  
+> &emsp;&emsp;ros2 control set_controller_state  
+> &emsp;&emsp;ros2 control set_hardware_component_state  
+> &emsp;&emsp;ros2 control switch_controllers  
+> &emsp;&emsp;ros2 control unload_controller  
+> &emsp;&emsp;ros2 control view_controller_chains  
 
 NOTES to `docker run [OPTIONS] <image_name> [COMMAND]`:
 - The `--it` option ensures that an interactive session with pseudo-TTY is created.

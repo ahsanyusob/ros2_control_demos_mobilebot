@@ -139,11 +139,11 @@ hardware_interface::CallbackReturn CarlikeBotSystemHardware::on_init(
     }
   }
 
-  // // BEGIN: This part here is for exemplary purposes - Please do not copy to your production
+  // BEGIN: This part here is for exemplary purposes - Please do not copy to your production
   // code
   hw_start_sec_ = std::stod(info_.hardware_parameters["example_param_hw_start_duration_sec"]);
   hw_stop_sec_ = std::stod(info_.hardware_parameters["example_param_hw_stop_duration_sec"]);
-  // // END: This part here is for exemplary purposes - Please do not copy to your production code
+  // END: This part here is for exemplary purposes - Please do not copy to your production code
 
   return hardware_interface::CallbackReturn::SUCCESS;
 }
@@ -153,11 +153,13 @@ hardware_interface::CallbackReturn CarlikeBotSystemHardware::on_configure(
 {
   RCLCPP_INFO(get_logger(), "Configuring ...please wait...");
 
+  // BEGIN: This part here is for exemplary purposes - Please do not copy to your production
   for (auto i = 0; i < hw_start_sec_; i++)
   {
     rclcpp::sleep_for(std::chrono::seconds(1));
     RCLCPP_INFO(get_logger(), "%.1f seconds left...", hw_start_sec_ - i);
   }
+  // END: This part here is for exemplary purposes - Please do not copy to your production code
 
   // reset values always when configuring hardware
   for (const auto & [name, descr] : joint_state_interfaces_)

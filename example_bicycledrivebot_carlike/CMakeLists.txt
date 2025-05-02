@@ -5,6 +5,10 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "(GNU|Clang)")
   add_compile_options(-Wall -Wextra)
 endif()
 
+# we want C++17 features
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 # set the same behavior for windows as it is on linux
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
@@ -36,6 +40,8 @@ add_library(
   ros2_control_demo_bicycledrivebot_carlike
   SHARED
   hardware/carlikebot_system.cpp
+  hardware/carlikebot_actuator_over_socket.cpp
+  hardware/carlikebot_sensor_over_socket.cpp
 )
 target_compile_features(ros2_control_demo_bicycledrivebot_carlike PUBLIC cxx_std_17)
 target_include_directories(ros2_control_demo_bicycledrivebot_carlike PUBLIC
